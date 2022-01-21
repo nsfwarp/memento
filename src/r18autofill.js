@@ -6,14 +6,14 @@ function R18(actorLibrary, actorNameField, actorImageField, actorUrlField) {
 }
 
 R18.prototype.search = function(id) {
-    var contentId = id.replace(/([A-Z]+)-?([0-9]+)/i, "$100$2");
-    var searchUrl = "https://www.r18.com/api/v4f/contents/" + encodeURIComponent(contentId);
+    const contentId = id.replace(/([A-Z]+)-?([0-9]+)/i, "$100$2");
+    const searchUrl = "https://www.r18.com/api/v4f/contents/" + encodeURIComponent(contentId);
 
-    var response = http().get(searchUrl);
-    var json = JSON.parse(response.body);
-    var d = json.data;
+    const response = http().get(searchUrl);
+    const json = JSON.parse(response.body);
+    const d = json.data;
 
-    var res = {};
+    let res = {};
 
     if (json.status == "OK") {
         res = {
@@ -34,22 +34,21 @@ R18.prototype.search = function(id) {
 
         if (d.categories) {
             res.genres = [];
-            for (i = 0; i < d.categories.length; ++i) {
-                var cat = d.categories[i];
-                res.genres.push(cat.name);
+            for (let i = 0; i < d.categories.length; ++i) {
+                res.genres.push(d.categories[i].name);
             }
         }
 
         if (d.actresses) {
-            var actorLib = libByName(this.actorLibrary);
+            let actorLib = libByName(this.actorLibrary);
             res.actors = [];
 
-            for (i = 0; i < d.actresses.length; ++i) {
-                var actress = d.actresses[i];
-                var finds = actorLib.find(actress.name);
-                var found = false;
-                for (j = 0; j < finds.length & !found; ++j) {
-                    var foundActress = finds[j];
+            for (let i = 0; i < d.actresses.length; ++i) {
+                const actress = d.actresses[i];
+                const finds = actorLib.find(actress.name);
+                let found = false;
+                for (let j = 0; j < finds.length & !found; ++j) {
+                    const foundActress = finds[j];
                     if (foundActress.name == actress.name) {
                         message("Found " + actress.name);
                         found = true;
@@ -59,11 +58,11 @@ R18.prototype.search = function(id) {
                 }
 
                 if (!found) {
-                    var newActress = {};
+                    let newActress = {};
                     newActress[this.actorNameField] = actress.name;
                     newActress[this.actorImageField] = actress.image_url;
                     newActress[this.actorUrlField] = actress.actress_url;
-                    var newActressEntry = actorLib.create(newActress);
+                    const newActressEntry = actorLib.create(newActress);
                     message("Created " + newActressEntry.name);
                     // TODO: figure out what type of object is required to be pushed here
                     res.actors.push(newActressEntry.name);
