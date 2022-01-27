@@ -47,7 +47,12 @@ R18.prototype.search = function(id) {
                 const foundActress = actorLib.findByKey(actress.name);
                 if (foundActress) {
                     message("Found " + actress.name);
-                    actors.push(foundActress);
+                    let jsonActor = {};
+                    // TODO: handle cases when not all fields exist in the actor library
+                    jsonActor[this.actorNameField] = foundActress.field(this.actorNameField);
+                    jsonActor[this.actorImageField] = foundActress.field(this.actorImageField);
+                    //jsonActor[this.actorUrlField] = foundActress.field(this.actorUrlField);
+                    actors.push(jsonActor);
                 } else {
                     let newActress = {};
                     newActress[this.actorNameField] = actress.name;
@@ -55,7 +60,7 @@ R18.prototype.search = function(id) {
                     newActress[this.actorUrlField] = actress.actress_url;
                     const newActressEntry = actorLib.create(newActress);
                     message("Created " + actress.name);
-                    actors.push(newActressEntry);
+                    actors.push(newActress);
                 }
             }
 
@@ -66,7 +71,7 @@ R18.prototype.search = function(id) {
     return res;
 }
 
-function autolink(actorFieldName, actorJsonFieldName, actorLibraryName, actorNameFieldName) {
+function autolinkActors(actorFieldName, actorJsonFieldName, actorLibraryName, actorNameFieldName) {
     let e = entry();
     let actorField = e.field(actorFieldName);
 
@@ -83,12 +88,13 @@ function autolink(actorFieldName, actorJsonFieldName, actorLibraryName, actorNam
         for (let actor of actors) {
             let libActor = actorLib.findByKey(actor[actorNameFieldName]);
             if (!libActor) {
-                message("Creating " + actor[actorNameFieldName]);
                 libActor = actorLib.create(actor);
+                message("Created " + actor[actorNameFieldName]);
             } else {
-                message("Found " + actor[actorNameFieldName]);
+                // message("Found " + actor[actorNameFieldName]);
             }
             e.link(actorFieldName, libActor);
+            message("Linked ", actor[actorNameFieldName]);
         }
     }
 }

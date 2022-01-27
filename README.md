@@ -22,9 +22,36 @@ result(res);
 - back in the library, add a new movie item
 - enter the complete id in the "search by title" field configured for the script (supported id formats: SIVR-102, SIVR102, sivr102, sivr-102)
 - a suggestion box with the search result should pop up, tap it
-- all configured fields should now be autofilled and actor objects should have been created
+- all configured fields (except actors) should now be autofilled and actor objects should have been created
 
-#### Properties returned by the script
+#### Linking actors to movies
+The autofill data source script can create entries in the Actors library, but cannot link movies to actors yet. A workaround using trigger scripts is available. Follow these steps:
+- in your movies library, have a field of type "link to entry" for the actors
+- link this field to your actors library, many-to-many relationship
+- make sure to also have an autofill rule for the "actorsJson" property (see table below)
+ - store it in a text field (may be hidden)
+- to your movies library, add a new trigger script
+ - Event "Creating an entry"
+ - Phase "After saving the entry"
+ - add r18autofill.js as external JS library
+ - add the following script (change parameters as needed)
+```
+// parameters:
+// - name of the "link to entry" actors field in movie library
+// - name of "actorsJson" field in movie library
+// - name of actors library
+// - name of the field holding the actor's name in the actors library
+autolink("Actors", "ActorsJson", "JAV Actors", "Name");
+```
+- add a second trigger script, same script content as before, but:
+ - Event "Updating an entry"
+ - Phase "Before saving the entry"
+
+Now, whenever you create or update the movie entry, the scripts will automatically link all actors as stored in your actorsJson field. If actors are already linked (e.g. the script already ran once before or you made manual changes), then the script will abort and not overwrite existing actor links.
+
+To reset the linked actors, simply delete all linked actors and save the entry - the script will restore the actor links according to your actorsJson field.
+
+#### Properties returned by the autofill script
 
 | Property | Type | Content |
 |----------|------|---------|
