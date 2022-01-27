@@ -1,7 +1,8 @@
 # Memento scripts
-Tools and scripts for use in Memento DB
+Tools and scripts for use in Memento app for Android (untested on other platforms)
 
 ## Custom data sources
+The following scripts may be used to add custom data sources, that can automatically fill your entries with data, e.g. fetched from some web service.
 
 ### R18.com (nsfw) (src/r18autofill.js)
 Fetches information about Japanese adult video (JAV) from R18.com, e.g. id, title, genres, runtime, release date, actresses, etc.
@@ -31,10 +32,10 @@ The autofill data source script can create entries in the Actors library, but ca
 - make sure to also have an autofill rule for the "actorsJson" property (see table below)
  - store it in a text field (may be hidden)
 - to your movies library, add a new trigger script
- - Event "Creating an entry"
- - Phase "After saving the entry"
- - add r18autofill.js as external JS library
- - add the following script (change parameters as needed)
+  - Event "Creating an entry"
+  - Phase "After saving the entry"
+  - add r18autofill.js as external JS library
+  - add the following script (change parameters as needed)
 ```
 // parameters:
 // - name of the "link to entry" actors field in movie library
@@ -44,8 +45,8 @@ The autofill data source script can create entries in the Actors library, but ca
 autolink("Actors", "ActorsJson", "JAV Actors", "Name");
 ```
 - add a second trigger script, same script content as before, but:
- - Event "Updating an entry"
- - Phase "Before saving the entry"
+  - Event "Updating an entry"
+  - Phase "Before saving the entry"
 
 Now, whenever you create or update the movie entry, the scripts will automatically link all actors as stored in your actorsJson field. If actors are already linked (e.g. the script already ran once before or you made manual changes), then the script will abort and not overwrite existing actor links.
 
