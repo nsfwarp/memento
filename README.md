@@ -42,7 +42,7 @@ The autofill data source script can create entries in the Actors library, but ca
 // - name of "actorsJson" field in movie library
 // - name of actors library
 // - name of the field holding the actor's name in the actors library
-autolink("Actors", "ActorsJson", "JAV Actors", "Name");
+autolinkActors("Actors", "ActorsJson", "JAV Actors", "Name");
 ```
 - add a second trigger script, same script content as before, but:
   - Event "Updating an entry"
