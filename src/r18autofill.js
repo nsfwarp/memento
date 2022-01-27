@@ -19,23 +19,23 @@ R18.prototype.search = function(id) {
         res = {
             "title": d.dvd_id,
             "id": d.dvd_id,
-            "desc": d.title,
-            "thumb": d.images.jacket_image.large,
-            "studio": d.maker ? d.maker.name : "",
-            "label": d.label ? d.label.name : "",
+            "desc": d.title ? d.title : "",
+            "thumb": (d.images && d.images.jacket_image && d.images.jacket_image.large) d.images.jacket_image.large : "",
+            "studio": (d.maker && d.maker.name) d.maker.name : "",
+            "label": (d.label && d.label.name) d.label.name : "",
             "runtime": Number(d.runtime_minutes),
-            "R18": d.detail_url,
-            "director": d.director,
-            "vr": d.is_vr,
-            "series": d.series ? d.series.name : "",
-            "sample": d.sample ? (d.sample.high ? d.sample.high : "") : "",
+            "R18": d.detail_url ? d.detail_url : "",
+            "director": d.director ? d.director : "",
+            "vr": d.is_vr ? d.is_vr : false,
+            "series": (d.series && d.series.name) ? d.series.name : "",
+            "sample": (d.sample && d.sample.high) ? d.sample.high : "",
             "releaseDate": d.release_date ? moment(d.release_date).toDate().getTime() : "",
         }
 
         if (d.categories) {
             res.genres = [];
-            for (let i = 0; i < d.categories.length; ++i) {
-                res.genres.push(d.categories[i].name);
+            for (let category of d.categories) {
+                res.genres.push(category.name);
             }
         }
 
