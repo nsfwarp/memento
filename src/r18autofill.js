@@ -73,7 +73,3 @@ R18.prototype.search = function(id) {
 
     return res;
 }
-
-R18.prototype.getDetails = function(id) {
-    // TODO: dostuff
-}
