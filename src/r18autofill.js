@@ -41,35 +41,54 @@ R18.prototype.search = function(id) {
 
         if (d.actresses) {
             let actorLib = libByName(this.actorLibrary);
-            res.actors = [];
+            let actors = [];
 
-            for (let i = 0; i < d.actresses.length; ++i) {
-                const actress = d.actresses[i];
-                const finds = actorLib.find(actress.name);
-                let found = false;
-                for (let j = 0; j < finds.length & !found; ++j) {
-                    const foundActress = finds[j];
-                    if (foundActress.name == actress.name) {
-                        message("Found " + actress.name);
-                        found = true;
-                        // TODO: figure out what type of object is required to be pushed here
-                        res.actors.push(actress.name);
-                    }
-                }
-
-                if (!found) {
+            for (let actress of d.actresses) {
+                const foundActress = actorLib.findByKey(actress.name);
+                if (foundActress) {
+                    message("Found " + actress.name);
+                    actors.push(foundActress);
+                } else {
                     let newActress = {};
                     newActress[this.actorNameField] = actress.name;
                     newActress[this.actorImageField] = actress.image_url;
                     newActress[this.actorUrlField] = actress.actress_url;
                     const newActressEntry = actorLib.create(newActress);
-                    message("Created " + newActressEntry.name);
-                    // TODO: figure out what type of object is required to be pushed here
-                    res.actors.push(newActressEntry.name);
+                    message("Created " + actress.name);
+                    actors.push(newActressEntry);
                 }
             }
+
+            res.actorsJson = JSON.stringify(actors);
         }
     }
 
     return res;
+}
+
+function autolink(actorFieldName, actorJsonFieldName, actorLibraryName, actorNameFieldName) {
+    let e = entry();
+    let actorField = e.field(actorFieldName);
+
+    // if actor links are already present, then do not overwrite
+    // and just abort the function
+    if (actorField.length > 0) return;
+
+    let actorsJson = e.field(actorJsonFieldName);
+
+    if (actorsJson) {
+        let actors = JSON.parse(actorsJson);
+        let actorLib = libByName(actorLibraryName);
+
+        for (let actor of actors) {
+            let libActor = actorLib.findByKey(actor[actorNameFieldName]);
+            if (!libActor) {
+                message("Creating " + actor[actorNameFieldName]);
+                libActor = actorLib.create(actor);
+            } else {
+                message("Found " + actor[actorNameFieldName]);
+            }
+            e.link(actorFieldName, libActor);
+        }
+    }
 }

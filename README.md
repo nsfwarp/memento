@@ -42,4 +42,4 @@ result(res);
 | sample | string | URL of movie trailer / sample video (if available) |
 | releaseDate | Date | release date of video on R18.com (might differ from DVD/Blu-Ray release date) |
 | genres | array of strings | collection of "genres", tags or categories as R18 calls them |
-| actors | array of strings | (currently broken) collection of names of actresses playing in that movie |
+| actorsJson | string | JSON representation of all actor entries |
