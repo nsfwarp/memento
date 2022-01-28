@@ -71,3 +71,4 @@ To reset the linked actors, simply delete all linked actors and save the entry -
 | releaseDate | Date | release date of video on R18.com (might differ from DVD/Blu-Ray release date) |
 | genres | array of strings | collection of "genres", tags or categories as R18 calls them |
 | actorsJson | string | JSON representation of all actor entries |
+| images | array of strings | collection of preview images (if available) |

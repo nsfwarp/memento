@@ -66,6 +66,17 @@ R18.prototype.search = function(id) {
 
             res.actorsJson = JSON.stringify(actors);
         }
+
+        if (d.gallery && d.gallery.length > 0) {
+            let images = [];
+
+            for (let image of d.gallery) {
+                let imageUrl = image["large"] ? image["large"] : image[0];
+                if (imageUrl) images.push(imageUrl);
+            }
+
+            res.images = images;
+        }
     }
 
     return res;
